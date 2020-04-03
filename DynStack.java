@@ -1,115 +1,105 @@
-import java.util.Random;
-import java.util.UUID;
 //Jahreiss, Kevin; Karasz, David; Urban, Melanie; 
-public class MyStackDemo {
-	
-	public static void main(String[] args) {
-		//Integer Stack test 
-		DynStack<Integer> intStack = new DynStack<>();
-		//String Stack test 
-		DynStack<String>strStack = new DynStack<>();
+public class DynStack<E> {
 
-		
-		//Integer
-		System.out.println("Integer: ");
-		System.out.println(intStack.contains(3));
-		System.out.println(intStack.isEmpty());
-		System.out.println(intStack.size());
-		
-		
-		intStack.push(1);
-		intStack.push(2);
-		intStack.push(3);
-		
-		System.out.println(intStack.contains(5));
-		System.out.println(intStack.contains(1));
-		
-		intStack.pop();
-		intStack.pop();
-		intStack.pop();
-		
-		
-		//String
-		System.out.println();
-		System.out.println("String: ");
-		System.out.println(strStack.contains("a"));
-		System.out.println(strStack.isEmpty());
-		System.out.println(strStack.size());
-		
-		strStack.push("aa");
-		strStack.push("bb");
-		strStack.push("cc");
-		
-		System.out.println(strStack.contains("bbb"));
-		System.out.println(strStack.contains("ccc"));
-		
-		strStack.pop();
-		strStack.pop();
-		strStack.pop();
-		
-		
-		System.out.println();
-		System.out.println("Integer Radnom: ");
-		//Fill the Stack with 1000 Random Integer Elements and run them with 1000 different random push pop peek functions
-		for(int i = 0; i < 1000; i++) {
-			intStack.push(new Random().nextInt(1000));
+	private Node head;
+
+	//constructor, creats an empty stack
+	public DynStack() {
+		head = null;
+	}
+
+	//inserts item at the top of this stack
+	public void push(E item) {
+		Node p = new Node(item);
+		p.next = head;
+		head = p;
+	}
+
+	//returns the top item of this stack and removes it
+	//reutrns null, if this stack is empty
+	public Node pop() {
+		if(head == null)
+			return null;
+		Node p = head;
+		head = head.next;
+		return p;
+	}
+
+	//returns the top item of this stack without removing it
+	//returns null, if this stack is empty
+	public Node peek() {
+		return head;
+	}
+
+	//returns true if this stack contains no elements
+	public boolean isEmpty() {
+		return head == null;
+	}
+
+	//returns the number of elements in this stack
+	public int size() {
+		int n = 0;
+		Node p = head;
+		while (p != null) {
+			n++;
+			p = p.next;
 		}
-		System.out.println(intStack.toString());
-		for(int i = 0; i < 1000; i++) {
-			int n = new Random().nextInt(5);
-			if(n >= 3) {
-				intStack.push(new Random().nextInt(1000));
-				System.out.println("push wird ausgefuhrt.");
-			}
-			if(n >= 1 && n < 3) {
-				intStack.pop();
-				System.out.println("pop wird ausgefuhrt.");
-			}
-			if(n == 0) {
-				intStack.peek();
-				System.out.println("peek wird ausgefuhrt.");
+		return n;
+	}
+
+	//returns the position of item on this stack, the top positon has count 0 
+	//returns -1 if item is not on this stack; compares items with equals!
+	public int contains(E item) {
+		int n = 0;
+		Node p = head;
+		if(p != null) {
+			while(p != null && !p.data.equals(item)) {
+				n++;
+				if(p.data.equals(item))
+					return n;
+				p = p.next;
 			}
 		}
-		System.out.println(intStack.toString());
-		System.out.println(intStack.size());
-		System.out.println(intStack.pop());
-		System.out.println(intStack.pop());
-		System.out.println(intStack.pop());
-		
-		System.out.println();
-		System.out.println("String Radnom: ");
-		//Fill the Stack with 1000 Random String Elements and run them with 1000 different random push pop peek functions
-		for(int i=0;i<=1000;i++){
-			String n = generateString();
-			strStack.push(n);
-			if(i>1000){
-				System.out.println(strStack.peek());
-			}
+		if(p == null)
+			n = -1;
+		return n;
+	}
+
+	
+
+	//returns a String-representation of this stack as
+	//[item0, item1, ...] with item0 as the top item
+	public String toString() {
+		String s = "[";
+		Node p = head;
+		if (p != null) {
+			s = s + p.toString();
+			p = p.next;
 		}
-		System.out.println();
-		for(int i=0;i<=1000;i++){
-			Random rand=new Random();
-			int n = rand.nextInt(5)+1;
-			if(n==1||n==2){
-				String n1 = generateString();
-				strStack.push(n1);
-			}else if(n==3||n==4){
-				strStack.pop();
-			}else if(n==5){
-				strStack.peek();
-			}
-			if(i>990){
-				System.out.println(strStack.peek());
-			}
+		while (p != null) {
+			s = s + "," + p.toString();
+			p = p.next;
 		}
-		
+		s = s + "]";
+		return s;
 	}
 	
-	
-	// Make a random String and
-		public static String generateString(){
-			String uuid = UUID.randomUUID().toString();
-			return uuid;
+	//Inner Classes
+	private class Node<E> {
+		
+		public E data;
+		public Node next;
+		
+		public Node(E data) {
+			this.data = data;
+			this.next = null;
+		}
+		
+		public String toString() {
+			String s = data.toString();
+			return s;
 		}
 
+	}
+	
 }
